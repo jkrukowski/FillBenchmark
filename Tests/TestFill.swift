@@ -35,6 +35,24 @@ internal final class TestFill: XCTestCase {
         }
     }
 
+    internal func testFillStandalone10_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 10)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillStandalone(indexes: indexes4, value: -Float.infinity)
+        }
+    }
+
+    internal func testFillWithHelper10_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 10)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillWithHelper(indexes: indexes4, value: -Float.infinity)
+        }
+    }
+
     internal func testFill100_100() {
         let logits1 = MLMultiArray.logits(count: 100)
         let indexes1 = indexes(count: 100)
@@ -67,6 +85,24 @@ internal final class TestFill: XCTestCase {
         }
     }
 
+    internal func testFillStandalone100_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 100)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillStandalone(indexes: indexes4, value: -Float.infinity)
+        }
+    }
+
+    internal func testFillWithHelper100_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 100)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillWithHelper(indexes: indexes4, value: -Float.infinity)
+        }
+    }
+
     internal func testFillAll_100() {
         let logits1 = MLMultiArray.logits(count: 100)
         let indexes1 = indexes(count: 100)
@@ -96,6 +132,24 @@ internal final class TestFill: XCTestCase {
         let indexes4 = indexes(count: 100_000)
         measure(metrics: Self.metrics, options: Self.options) {
             logits4.fill(indexes: indexes4, with: -Float.infinity)
+        }
+    }
+
+    internal func testFillStandaloneAll_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 100_000)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillStandalone(indexes: indexes4, value: -Float.infinity)
+        }
+    }
+
+    internal func testFillWithHelperAll_100000() {
+        let logits4 = MLMultiArray.logits(count: 100_000)
+        let indexes4 = indexes(count: 100_000)
+
+        measure(metrics: Self.metrics, options: Self.options) {
+            logits4.fillWithHelper(indexes: indexes4, value: -Float.infinity)
         }
     }
 }
