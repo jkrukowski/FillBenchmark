@@ -19,6 +19,7 @@ public extension MLMultiArray {
     /// index with the dimension’s stride
     ///
     /// More info here: https://developer.apple.com/documentation/coreml/mlmultiarray/2879231-subscript
+    @inline(__always)
     internal func linearOffset(for index: [NSNumber], strides strideInts: [Int]? = nil) -> Int {
         var linearOffset = 0
         let strideInts = strideInts ?? strides.map { $0.intValue }
@@ -45,29 +46,25 @@ public extension MLMultiArray {
         }
     }
 
-    func fillStandalone<Value>(indexes: [[NSNumber]], value: Value) {
+    func fillStandalone<Value>(indexes: [[NSNumber]], with value: Value) {
         let pointer = UnsafeMutablePointer<Value>(OpaquePointer(dataPointer))
         let strideInts = strides.map { $0.intValue }
-        var offset = 0
 
-        for indexArray in indexes {
-            for i in 0..<strideInts.count {
-                offset += indexArray[i].intValue * strideInts[i]
+        for index in indexes {
+            let offset = zip(strideInts, index).reduce(0) { partialResult, data in
+                partialResult + data.0 * data.1.intValue
             }
-
-            if offset >= 0 && offset < count {
-                pointer.advanced(by: offset).pointee = value
-            }
+            pointer[offset] = value
         }
     } 
 
-    func fillWithHelper<Value>(indexes: [[NSNumber]], value: Value) {
+    func fillWithHelper<Value>(indexes: [[NSNumber]], with value: Value) {
         let pointer = UnsafeMutablePointer<Value>(OpaquePointer(dataPointer))
         let strideInts = strides.map { $0.intValue }
 
         for indexArray in indexes {
             let linearOffset = linearOffset(for: indexArray, strides: strideInts)
-            pointer.advanced(by: linearOffset).pointee = value
+            pointer[linearOffset] = value
         }
     }
 
